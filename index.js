@@ -63,7 +63,55 @@ function showQuestion(){
 		button. innerHTML = answer.text;
 		button.classList.add("btn");
 		answerButton.appendChild(button);
+		if(answer.correct){
+			button.dataset.correct = answer.correct;
+		}
+		button.addEventListener("click", selectAnswer);
 	});
 }
+
+function selectAnswer(e){
+	const selectBtn = e.target;
+	const isCorrect = selectBtn.dataset.correct === "true";
+	if(isCorrect){
+		selectBtn.classList.add("correct");
+		score++;
+	}else{
+		selectBtn.classList.add("incorrect");
+	}
+	Array.from(answerButton.children).forEach(button =>{
+		if(button.dataset.correct === "true"){
+			button.classList.add("correct");
+		}
+		button.disabled = true;
+	});
+	nextButton.style.display = "block";
+}
+
+function showScore(){
+
+	answerButton.innerHTML = '';
+
+	questionElement.innerHTML = `Your score is ${score} out of ${questions.length}!`;
+	nextButton.innerHTML = "Play Again";
+	nextButton.style.display = "block";
+}
+
+function handleNextButton(){
+	currentQuestionIndex++;
+	if(currentQuestionIndex < questions.length){
+		showQuestion();
+	}else{
+		showScore();
+	}
+}
+
+nextButton.addEventListener("click", ()=>{
+	if (currentQuestionIndex < questions.length) {
+		handleNextButton();
+	}else{
+		startQuiz();
+	}
+})
 
 startQuiz();
